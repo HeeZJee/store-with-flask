@@ -67,6 +67,7 @@
           <!-- Your Columns HERE -->
           <th scope="col">{{key.upper()}}</th>
           {% endfor %}
+          <th>OPTIONS</th>
         </tr>
       </thead>
       <tbody>
@@ -77,7 +78,11 @@
           <td scope="col">{{item.id}}</td>
           <td scope="col">{{item.name}}</td>
           <td scope="col">{{item.barcode}}</td>
-          <td scope="col">{{item.price}}</td>
+          <td scope="col">{{item.price}}$</td>
+          <td>
+            <button class="btn btn-outline btn-info">More Info</button>
+            <button class="btn btn-outline btn-success">Buy Now</button>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
