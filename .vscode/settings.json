@@ -1,0 +1,26 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:myproject}/market.db",
+            "name": "MARKET",
+            "group": "MARKET"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "MARKET",
+            "group": "MARKET",
+            "database": "${workspaceFolder:myproject}/market.db"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "market",
+            "group": "market",
+            "database": "${workspaceFolder:myproject}/market.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
