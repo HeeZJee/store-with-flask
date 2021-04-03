@@ -1,8 +1,8 @@
-from src import app;
+from src import app
 from flask import render_template
 from typing import List
 from src.models import Item
-
+from src.forms import RegisterForm
 
 
 # adding route for home page
@@ -23,3 +23,9 @@ def market():
     #     {'id': 3, 'name': 'Keyboard', 'barcode': '231985128446', 'price': 150}
     # ]
     return render_template("market.html", items=items)
+
+
+@app.route('/register')
+def register():
+    form = RegisterForm()
+    return render_template('register.html', form=form)

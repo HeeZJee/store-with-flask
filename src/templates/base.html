@@ -43,15 +43,13 @@
             <a class="nav-link" href="#">Login</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Register</a>
+            <a class="nav-link" href="{{ url_for('register' )}}">Register</a>
           </li>
         </ul>
       </div>
     </nav>
-    <h2>{{ self.title() }}</h2>
     <!-- Future Content here -->
-    <title>{% block content %} {% endblock %}</title>
-    {% block table %} {% endblock %}
+    {% block content %} {% endblock %}
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
