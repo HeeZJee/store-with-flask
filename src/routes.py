@@ -1,9 +1,10 @@
+from os import error
 from src import app
-from flask import render_template
+from flask import render_template, redirect, url_for
 from typing import List
-from src.models import Item
+from src.models import Item, User
 from src.forms import RegisterForm
-
+from src import db
 
 # adding route for home page
 @app.route('/')
@@ -25,7 +26,27 @@ def market():
     return render_template("market.html", items=items)
 
 
-@app.route('/register')
+# adding route for registration page
+@app.route('/register',methods=['GET',"POST"])
 def register():
+
+    # create instance of form
     form = RegisterForm()
+
+#  adding data to database on clicking submit button
+    if form.validate_on_submit():
+        user_to_create = User(
+            username=form.username.data,
+            email=form.email.data,
+            password=form.password.data,
+        )
+
+        db.session.add(user_to_create)
+        db.session.commit()
+        return redirect(url_for('market'))
+
+#  checking for errors on creating user
+    if form.errors != {}:
+        for errors in form.errors.values():
+            print("There was an error on creating user:", errors)
     return render_template('register.html', form=form)
