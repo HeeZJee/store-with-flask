@@ -1,6 +1,5 @@
-from os import error
 from src import app
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, flash
 from typing import List
 from src.models import Item, User
 from src.forms import RegisterForm
@@ -48,5 +47,5 @@ def register():
 #  checking for errors on creating user
     if form.errors != {}:
         for errors in form.errors.values():
-            print("There was an error on creating user:", errors)
-    return render_template('register.html', form=form)
+            flash(errors)
+    return render_template('register.html', form=form, category='danger')
