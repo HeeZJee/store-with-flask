@@ -4,6 +4,7 @@ from typing import List
 from src.models import Item, User
 from src.forms import LoginForm, RegisterForm
 from src import db
+from flask_login import login_user
 
 # adding route for home page
 @app.route('/')
@@ -30,6 +31,18 @@ def market():
 @app.route('/login', methods=['GET', "POST"])
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        
+        attempted_user = User.query.filter_by(username=form.username.data).first()
+
+        if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data):
+            login_user(attempted_user)
+            flash(
+                f"Success! you are logged in as {attempted_user.username}", category='success')
+            return redirect(url_for('market'))
+        else:
+            flash("Username and Password are not match please try again.",
+                  category='danger')
     return render_template('login.html', form=form)
 
 # adding route for registration page
@@ -54,5 +67,5 @@ def register():
     #  checking for errors on creating user
     if form.errors != {}:
         for errors in form.errors.values():
-            flash(errors)
-    return render_template('register.html', form=form, category='danger')
+            flash(errors, category='danger')
+    return render_template('register.html', form=form)

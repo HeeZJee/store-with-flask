@@ -1,7 +1,16 @@
-from src import db, bcrypt
+import flask_login
+import flask_sqlalchemy
+from src import db, bcrypt, login_manager
+from flask_login import UserMixin
+"""
+You will need to provide a user_loader callback. This callback is used to reload the user object from the user ID stored in the session. It should take the unicode ID of a user, and return the corresponding user object. For example:
+"""
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # creating table for users
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)
     username = db.Column(db.String(length=30), nullable=False, unique=True)
     email = db.Column(db.String(length=50), nullable=False, unique=True)
@@ -16,6 +25,10 @@ class User(db.Model):
     @password_hash.setter
     def password_hash(self, plain_text_password):
         self.password = bcrypt.generate_password_hash(plain_text_password).decode('utf-8')
+    
+    def check_password_correction(self, attempted_password):
+        return bcrypt.check_password_hash(self.password,attempted_password)
+
         
     def __repr__(self):
         return self.username

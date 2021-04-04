@@ -2,7 +2,7 @@ import os
 from flask import Flask;
 from flask_sqlalchemy import SQLAlchemy;
 from flask_bcrypt import Bcrypt
-
+from flask_login import LoginManager
 
 app = Flask(__name__);
 
@@ -16,5 +16,9 @@ db = SQLAlchemy(app);
 
 # connecting to bcrypt to generate hash attributes
 bcrypt = Bcrypt(app)
+
+# allowing flask login to manage user logins
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 from src import routes
