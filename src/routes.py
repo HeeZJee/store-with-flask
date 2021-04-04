@@ -37,7 +37,7 @@ def register():
         user_to_create = User(
             username=form.username.data,
             email=form.email.data,
-            password=form.password.data,
+            password_hash=form.password.data,
         )
 
         db.session.add(user_to_create)

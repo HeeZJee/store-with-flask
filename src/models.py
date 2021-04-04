@@ -1,5 +1,4 @@
-from sqlalchemy.orm import backref, lazyload
-from src import db
+from src import db, bcrypt
 
 # creating table for users
 class User(db.Model):
@@ -10,7 +9,14 @@ class User(db.Model):
     budget = db.Column(db.Integer(), nullable=False, default=1000)
     item = db.relationship('Item', backref='owned_user', lazy=True)
 
-
+    @property
+    def password_hash(self):
+        return self.password_hash
+    
+    @password_hash.setter
+    def password_hash(self, plain_text_password):
+        self.password = bcrypt.generate_password_hash(plain_text_password).decode('utf-8')
+        
     def __repr__(self):
         return self.username
 
