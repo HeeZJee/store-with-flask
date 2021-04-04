@@ -22,6 +22,15 @@ class User(db.Model, UserMixin):
     def password_hash(self):
         return self.password_hash
     
+    @property
+    def pretty_budget(self):
+        if len(str(self.budget)) > 3:
+            print(f"{str(self.budget)[:-3]},{str(self.budget)[-3:]} $")
+            return f"{str(self.budget)[:-3]},{str(self.budget)[-3:]} $"
+        else:
+            print(self.budget)
+            return f"{self.budget} $"
+
     @password_hash.setter
     def password_hash(self, plain_text_password):
         self.password = bcrypt.generate_password_hash(plain_text_password).decode('utf-8')
