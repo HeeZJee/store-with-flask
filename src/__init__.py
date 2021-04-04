@@ -2,7 +2,6 @@ import os
 from flask import Flask;
 from flask_sqlalchemy import SQLAlchemy;
 from flask_bcrypt import Bcrypt
-from src import routes
 
 
 app = Flask(__name__);
@@ -18,3 +17,4 @@ db = SQLAlchemy(app);
 # connecting to bcrypt to generate hash attributes
 bcrypt = Bcrypt(app)
 
+from src import routes
