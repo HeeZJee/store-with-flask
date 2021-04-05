@@ -6,7 +6,7 @@ from flask_login import LoginManager
 
 app = Flask(__name__);
 
-# configuring database URI
+# configuring database URIhome
 app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///market.db';
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True;
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')

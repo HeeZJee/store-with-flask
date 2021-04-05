@@ -4,7 +4,7 @@ from typing import List
 from src.models import Item, User
 from src.forms import LoginForm, RegisterForm
 from src import db
-from flask_login import login_user
+from flask_login import login_user, logout_user
 
 # adding route for home page
 @app.route('/')
@@ -69,3 +69,9 @@ def register():
         for errors in form.errors.values():
             flash(errors, category='danger')
     return render_template('register.html', form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    flash("You have been logged out.", category='info')
+    return redirect(url_for("index"))
