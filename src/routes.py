@@ -4,7 +4,7 @@ from typing import List
 from src.models import Item, User
 from src.forms import LoginForm, RegisterForm
 from src import db
-from flask_login import login_user, logout_user
+from flask_login import login_user, login_required
 
 # adding route for home page
 @app.route('/')
@@ -15,6 +15,7 @@ def index():
 
 # adding route for marekt page
 @app.route('/market')
+@login_required
 def market():
 
     items: List[object] = Item.query.all()
