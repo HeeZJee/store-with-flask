@@ -15,7 +15,7 @@ content %}
         </tr>
       </thead>
       <tbody>
-        <!-- Your rows inside the table HERE: -->
+        <!-- Your rows inside the table HERE: -->selling_form
         {% for item in items %} {% include 'includes/items_modal.html' %}
         <tr>
           <!-- Your Columns HERE -->
@@ -48,6 +48,7 @@ content %}
     <h2>Your Items</h2>
     <div class="row">
       {%for owned_item in owned_items%}
+      {% include 'includes/sell_items.modal.html' %}
       <div class="col-md-6">
         <div style="margin-bottom: 5px" class="card text-center bg-dark">
           <div class="card-body">
@@ -57,7 +58,7 @@ content %}
               class="btn btn-outline-danger"
               style="margin-bottom: 5px"
               data-toggle="modal"
-              data-target="#YourDataTarget"
+              data-target="#Modal-SellingItem-{{ owned_item.id }}"
             >
               Sell this Item
             </button>

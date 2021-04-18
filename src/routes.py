@@ -3,7 +3,7 @@ from src import app
 from flask import render_template, redirect, url_for, flash, request
 from typing import List
 from src.models import Item, User
-from src.forms import LoginForm, RegisterForm, PurchaseItem
+from src.forms import LoginForm, RegisterForm, PurchaseItem, SellItem
 from src import db
 from flask_login import login_user, login_required, logout_user, current_user
 
@@ -21,11 +21,28 @@ def index():
 @login_required
 def market():
     purchase_form = PurchaseItem()
+    selling_form = SellItem()
 
-    # Handling request for purchase
     if request.method == "POST":
+
         purchase_item = request.form.get("purchase_item")
         p_item_obj = Item.query.filter_by(name=purchase_item).first()
+        
+        sold_item = request.form.get("sold_item")
+        s_item_obj = Item.query.filter_by(name=sold_item).first()
+        if s_item_obj:
+            if current_user.can_sell(s_item_obj):
+                s_item_obj.sell(current_user)
+                flash(
+                    f"Congratulations! You sold {s_item_obj.name} for {s_item_obj.price}", category='success')
+            else:
+                flash(
+                    f"Unfortunately! Something went wrong on selling {s_item_obj.name}", category="danger")
+
+        return redirect(url_for('market'))
+            
+
+        # Handling request for purchase
         if p_item_obj:
             if current_user.can_purchase(p_item_obj):
                 p_item_obj.buy(current_user)
@@ -41,7 +58,7 @@ def market():
         items: List[object] = Item.query.filter_by(owner=None)
         owned_items = Item.query.filter_by(owner=current_user.id)
 
-        return render_template("market.html", items=items, purchase_form=purchase_form, owned_items=owned_items)
+        return render_template("market.html", items=items, purchase_form=purchase_form, owned_items=owned_items, selling_form=selling_form)
 
 
 # adding route for registration page
