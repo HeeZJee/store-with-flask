@@ -25,10 +25,8 @@ class User(db.Model, UserMixin):
     @property
     def pretty_budget(self):
         if len(str(self.budget)) > 3:
-            print(f"{str(self.budget)[:-3]},{str(self.budget)[-3:]} $")
             return f"{str(self.budget)[:-3]},{str(self.budget)[-3:]} $"
         else:
-            print(self.budget)
             return f"{self.budget} $"
 
     @password_hash.setter
@@ -37,7 +35,10 @@ class User(db.Model, UserMixin):
     
     def check_password_correction(self, attempted_password):
         return bcrypt.check_password_hash(self.password,attempted_password)
-
+    
+    def can_purchase(self, item):
+        return self.budget > item.price
+ 
         
     def __repr__(self):
         return self.username
@@ -50,6 +51,11 @@ class Item(db.Model):
     barcode = db.Column(db.String(length=8), nullable=False, unique=True)
     description = db.Column(db.String(length=1024), nullable=False, unique=True)
     owner = db.Column(db.Integer(),db.ForeignKey('user.id'))
+
+    def buy(self, user):
+        self.owner = user.id
+        user.budget -= self.price
+        db.session.commit()
 
     def __repr__(self):
         return self.name

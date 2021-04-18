@@ -1,12 +1,15 @@
+from flask.globals import request
 from src import app
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request
 from typing import List
 from src.models import Item, User
-from src.forms import LoginForm, RegisterForm
+from src.forms import LoginForm, RegisterForm, PurchaseItem
 from src import db
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 
 # adding route for home page
+
+
 @app.route('/')
 @app.route('/home')
 def index():
@@ -14,13 +17,28 @@ def index():
 
 
 # adding route for marekt page
-@app.route('/market')
+@app.route('/market', methods=["GET", "POST"])
 @login_required
 def market():
+    purchase_form = PurchaseItem()
 
-    items: List[object] = Item.query.all()
+    # Handling request for purchase
+    if request.method == "POST":
+        purchase_item = request.form.get("purchase_item")
+        p_item_obj = Item.query.filter_by(name=purchase_item).first()
+        if p_item_obj:
+            if current_user.can_purchase(p_item_obj):
+                p_item_obj.buy(current_user)
+                flash(
+                    f"Congratulations! You purchased {p_item_obj.name} for {p_item_obj.price}", category='success')
+            else:
+                flash(f"Unfortunately! You don't have enough money to purchase {p_item_obj.name}", category="danger")
 
-    return render_template("market.html", items=items)
+        return redirect(url_for('market'))
+    # Listing Items on Market page for sale
+    if request.method == "GET":
+        items: List[object] = Item.query.filter_by(owner=None)
+        return render_template("market.html", items=items, purchase_form=purchase_form)
 
 
 # adding route for registration page
@@ -28,20 +46,23 @@ def market():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        
-        attempted_user = User.query.filter_by(username=form.username.data).first()
+
+        attempted_user = User.query.filter_by(
+            username=form.username.data).first()
 
         if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data):
             login_user(attempted_user)
-            flash(f"Success! you are logged in as {attempted_user.username}", category='success')
+            flash(
+                f"Success! you are logged in as {attempted_user.username}", category='success')
             return redirect(url_for('market'))
         else:
             flash("Username and Password are not match please try again.",
                   category='danger')
     return render_template('login.html', form=form)
 
+
 # adding route for registration page
-@app.route('/register',methods=['GET',"POST"])
+@app.route('/register', methods=['GET', "POST"])
 def register():
 
     # create instance registration of form
@@ -57,9 +78,10 @@ def register():
 
         db.session.add(user_to_create)
         db.session.commit()
-        
+
         login_user(user_to_create)
-        flash(f"Successfully registered! you are logged in as {user_to_create.username}", category='success')
+        flash(
+            f"Successfully registered! you are logged in as {user_to_create.username}", category='success')
 
         return redirect(url_for('market'))
 
@@ -68,6 +90,7 @@ def register():
         for errors in form.errors.values():
             flash(errors, category='danger')
     return render_template('register.html', form=form)
+
 
 @app.route('/logout')
 def logout():
