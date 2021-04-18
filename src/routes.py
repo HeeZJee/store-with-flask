@@ -32,13 +32,16 @@ def market():
                 flash(
                     f"Congratulations! You purchased {p_item_obj.name} for {p_item_obj.price}", category='success')
             else:
-                flash(f"Unfortunately! You don't have enough money to purchase {p_item_obj.name}", category="danger")
+                flash(
+                    f"Unfortunately! You don't have enough money to purchase {p_item_obj.name}", category="danger")
 
         return redirect(url_for('market'))
     # Listing Items on Market page for sale
     if request.method == "GET":
         items: List[object] = Item.query.filter_by(owner=None)
-        return render_template("market.html", items=items, purchase_form=purchase_form)
+        owned_items = Item.query.filter_by(owner=current_user.id)
+
+        return render_template("market.html", items=items, purchase_form=purchase_form, owned_items=owned_items)
 
 
 # adding route for registration page
